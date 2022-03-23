@@ -6,6 +6,9 @@ import { SarmaToken } from "../token/SarmaToken";
 import { TagToken } from "../token/TagToken";
 import { TextToken } from "../token/TextToken";
 import { WhitespaceToken } from "../token/WhitespaceToken";
+import { BoldTextToken } from "../token/BoldTextToken";
+import { ItalicTextToken } from "../token/ItalicTextToken";
+import { SarmaParserOptions } from "./SarmaParser";
 
 const EmoteRegex = /^:[\p{Letter}\p{Mark}0-9_-]+:$/gu;
 const TagRegex = /^#[\p{Letter}\p{Mark}0-9_-]+$/gu;
@@ -14,7 +17,8 @@ const UrlRegex =
 
 export function tokenize(
   buffer: string,
-  location: typeof SarmaToken.prototype.location
+  location: typeof SarmaToken.prototype.location,
+  options?: SarmaParserOptions
 ): SarmaToken {
   if (buffer === "\r\n" || buffer === "\n") {
     return new NewlineToken(buffer, location);
@@ -38,6 +42,16 @@ export function tokenize(
 
   if (buffer.startsWith("@")) {
     return new MentionToken(buffer, location);
+  }
+
+  if (options?.parseEmphasis) {
+    if (buffer.startsWith("**") && buffer.endsWith("**")) {
+      return new BoldTextToken(buffer, location);
+    }
+
+    if (buffer.startsWith("*") && buffer.endsWith("*")) {
+      return new ItalicTextToken(buffer, location);
+    }
   }
 
   return new TextToken(buffer, location);

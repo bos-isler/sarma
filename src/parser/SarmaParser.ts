@@ -9,10 +9,11 @@ export interface SarmaParserOptions {
   text: string;
   parseInto?: "words" | "chunks";
   parseWhitespaces?: boolean;
+  parseEmphasis?: boolean;
 }
 
 export class SarmaParser {
-  private options: SarmaParserOptions;
+  public readonly options: SarmaParserOptions;
 
   private currentIndex: number;
 
@@ -41,12 +42,17 @@ export class SarmaParser {
     }
   }
 
+  public popCharacter() {
+    this.tokenBuffer = this.tokenBuffer.slice(0, -1);
+  }
+
   public pushToken() {
     if (this.tokenBuffer === "") return;
-    const token = tokenize(this.tokenBuffer, [
-      this.tokenIndex,
-      this.currentIndex,
-    ]);
+    const token = tokenize(
+      this.tokenBuffer,
+      [this.tokenIndex, this.currentIndex],
+      this.options
+    );
     this.parsedTokens.push(token);
     this.tokenBuffer = "";
     this.tokenIndex = this.currentIndex + 1;

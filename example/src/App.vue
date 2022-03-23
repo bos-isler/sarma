@@ -28,6 +28,9 @@
         <div>
           <input type="checkbox" v-model="parseWhitespaces" /> Parse Whitespaces
         </div>
+        <div>
+          <input type="checkbox" v-model="parseEmphasis" /> Parse Emphasis (Bold and italic)
+        </div>
       </div>
     </div>
     <div class="col">
@@ -52,6 +55,7 @@ import "vue-json-pretty/lib/styles.css";
 
 const parseInto = ref<"words" | "chunks">("words");
 const parseWhitespaces = ref<boolean>(false);
+const parseEmphasis = ref<boolean>(false);
 const rawText = ref<string>("");
 const sarmaTokens = ref();
 
@@ -64,6 +68,7 @@ function parse() {
     text: rawText.value,
     parseInto: parseInto.value,
     parseWhitespaces: parseWhitespaces.value,
+    parseEmphasis: parseEmphasis.value,
   };
 
   localStorage.setItem("sarmaOptions", JSON.stringify(options));
@@ -71,16 +76,25 @@ function parse() {
   const parser = new SarmaParser(options);
 
   const tokens = parser.parse();
-  sarmaTokens.value = tokens.map((token) => ({
-    type: token.getType(),
-    rawText: shrink(JSON.stringify(token.rawText)),
-    location: token.location.join(", "),
-  }));
+  sarmaTokens.value = tokens.map((token) => {
+    const value: Record<string, any> = {};
+    value.type = token.getType();
+    value.rawText = shrink(JSON.stringify(token.rawText));
+    if (
+      shrink(JSON.stringify(token.rawText)) !==
+      shrink(JSON.stringify(token.trimEscapers()))
+    ) {
+      value.trimmed = token.trimEscapers();
+    }
+    value.location = token.location.join(", ");
+    return value;
+  });
 }
 
 watch(() => rawText.value, parse);
 watch(() => parseInto.value, parse);
 watch(() => parseWhitespaces.value, parse);
+watch(() => parseEmphasis.value, parse);
 
 onMounted(() => {
   const options: Partial<SarmaParserOptions> = JSON.parse(
@@ -89,6 +103,7 @@ onMounted(() => {
   rawText.value = options.text || "Hey there!";
   parseInto.value = options.parseInto || "words";
   parseWhitespaces.value = options.parseWhitespaces || false;
+  parseEmphasis.value = options.parseEmphasis || false;
 });
 </script>
 

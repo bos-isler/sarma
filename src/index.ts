@@ -10,3 +10,5 @@ export * from "./token/NewlineToken";
 export * from "./token/TagToken";
 export * from "./token/TextToken";
 export * from "./token/WhitespaceToken";
+export * from "./token/BoldTextToken";
+export * from "./token/ItalicTextToken";
