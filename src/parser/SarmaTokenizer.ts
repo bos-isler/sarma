@@ -8,7 +8,7 @@ import { TextToken } from "../token/TextToken";
 import { WhitespaceToken } from "../token/WhitespaceToken";
 
 const EmoteRegex = /^:[\p{Letter}\p{Mark}0-9_-]+:$/gu;
-const TagRegex = /^#[\p{Letter}\p{Mark}0-9]+$/gu;
+const TagRegex = /^#[\p{Letter}\p{Mark}0-9_-]+$/gu;
 const UrlRegex =
   /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)$/;
 

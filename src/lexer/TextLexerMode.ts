@@ -2,6 +2,8 @@ import { SarmaLexerMode, StepProps } from "./SarmaLexerMode";
 import { EmoteLexerMode } from "./EmoteLexerMode";
 import { WhitespaceToken } from "../token/WhitespaceToken";
 import { WhitespaceLexerMode } from "./WhitespaceLexerMode";
+import { MentionLexerMode } from "./MentionLexerMode";
+import { TagLexerMode } from "./TagLexerMode";
 
 export class TextLexerMode extends SarmaLexerMode {
   public step(props: StepProps): void {
@@ -27,6 +29,22 @@ export class TextLexerMode extends SarmaLexerMode {
       props.parser.moveCursor(1);
       props.parser.pushCharacter(props.character);
       return props.parser.changeMode(new WhitespaceLexerMode());
+    }
+
+    if(props.character === "#") {
+      props.parser.moveCursor(-1);
+      props.parser.pushToken();
+      props.parser.moveCursor(1);
+      props.parser.pushCharacter(props.character);
+      return props.parser.changeMode(new TagLexerMode());
+    }
+
+    if(props.character === "@") {
+      props.parser.moveCursor(-1);
+      props.parser.pushToken();
+      props.parser.moveCursor(1);
+      props.parser.pushCharacter(props.character);
+      return props.parser.changeMode(new MentionLexerMode());
     }
 
     if (props.character === ":" && props.nextCharacter !== "/") {
