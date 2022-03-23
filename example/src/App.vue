@@ -10,6 +10,25 @@
         placeholder="Hello! Welcome to Sarma Testing Grounds! :waving_hand:"
         v-model="rawText"
       ></textarea>
+      <div>
+        Parse Into
+        <div>
+          <input type="radio" v-model="parseInto" value="words" />
+          Words
+        </div>
+        <div>
+          <input type="radio" v-model="parseInto" value="chunks" />
+          Chunks
+        </div>
+      </div>
+
+      <br />
+
+      <div>
+        <div>
+          <input type="checkbox" v-model="parseWhitespaces" /> Parse Whitespaces
+        </div>
+      </div>
     </div>
     <div class="col">
       <label for="textInput">Sarma Tokens:</label>
@@ -28,38 +47,49 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from "vue";
 import VueJsonPretty from "vue-json-pretty";
-import { SarmaParser } from "sarma";
+import { SarmaParser, SarmaParserOptions } from "sarma";
 import "vue-json-pretty/lib/styles.css";
 
+const parseInto = ref<"words" | "chunks">("words");
+const parseWhitespaces = ref<boolean>(false);
 const rawText = ref<string>("");
 const sarmaTokens = ref();
 
-function shrink(text:string) {
+function shrink(text: string) {
   return text.substring(1, text.length - 1);
 }
 
-watch(
-  () => rawText.value,
-  () => {
-    localStorage.setItem("sarmaText", rawText.value);
-    const parser = new SarmaParser({
-      text: rawText.value,
-      parseInto: "chunks",
-      parseWhitespaces: false
-    });
-    const tokens = parser.parse();
-    console.log({ tokens });
-    sarmaTokens.value = tokens.map(token => ({
-      type: token.getType(),
-      rawText: shrink(JSON.stringify(token.rawText)),
-      location: token.location.join(", ")
-    }));
-  }
-);
+function parse() {
+  const options: SarmaParserOptions = {
+    text: rawText.value,
+    parseInto: parseInto.value,
+    parseWhitespaces: parseWhitespaces.value,
+  };
+
+  localStorage.setItem("sarmaOptions", JSON.stringify(options));
+
+  const parser = new SarmaParser(options);
+
+  const tokens = parser.parse();
+  sarmaTokens.value = tokens.map((token) => ({
+    type: token.getType(),
+    rawText: shrink(JSON.stringify(token.rawText)),
+    location: token.location.join(", "),
+  }));
+}
+
+watch(() => rawText.value, parse);
+watch(() => parseInto.value, parse);
+watch(() => parseWhitespaces.value, parse);
 
 onMounted(() => {
-  rawText.value = localStorage.getItem("sarmaText") || "Hey there!";
-})
+  const options: Partial<SarmaParserOptions> = JSON.parse(
+    localStorage.getItem("sarmaOptions") || ""
+  );
+  rawText.value = options.text || "Hey there!";
+  parseInto.value = options.parseInto || "words";
+  parseWhitespaces.value = options.parseWhitespaces || false;
+});
 </script>
 
 <style lang="scss">
@@ -138,7 +168,8 @@ h1 {
   }
 }
 
-.vjs-tree__node.is-highlight, .vjs-tree__node:hover {
-    background-color: rgba(#000, .4);
+.vjs-tree__node.is-highlight,
+.vjs-tree__node:hover {
+  background-color: rgba(#000, 0.4);
 }
 </style>

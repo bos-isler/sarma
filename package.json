@@ -1,7 +1,11 @@
 {
   "name": "sarma",
   "version": "0.0.1-alpha",
-  "description": "A lightweight parser to parse chat message tokens",
+  "description": "A lightweight parser to parse chat message tokens written in pure Typescript",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bos-isler/sarma.git"
+  },
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
