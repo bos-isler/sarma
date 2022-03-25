@@ -10,6 +10,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "watch:example": "cd example && yarn dev",
+    "build:example": "cd example && yarn build",
     "watch:dev": "tsc --watch",
     "build": "tsc",
     "prepublish": "yarn build",
