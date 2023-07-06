@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://jitpack.io/#TheSpawnProject/TheSpawnLanguage">
+  <a href="https://www.npmjs.com/package/sarma">
     <img src="https://raw.githubusercontent.com/bos-isler/sarma/master/.github/assets/logo.svg" height="150" alt="Sarma Logo" aria-label="Sarma Logo" />
   </a>
 </p>
@@ -7,6 +7,22 @@
 <p align="center">
   A lightweight parser to parse chat message tokens written in pure Typescript
 </p>
+
+<!-- Badges -->
+<p align="center">
+
+  <!-- Github Badges -->
+  <a href="https://github.com/CoconutGoodie/figma-plugin-react-vite/commits/master">
+    <img src="https://img.shields.io/github/last-commit/CoconutGoodie/figma-plugin-react-vite"/>
+  </a>
+  <a href="https://www.npmjs.com/package/sarma">
+    <img src="https://img.shields.io/npm/v/sarma"/>
+  </a>
+  <a href="https://www.npmjs.com/package/sarma">
+    <img src="https://img.shields.io/npm/dt/sarma"/>
+  </a>
+</p>
+
 
 # How To Use?
 
